@@ -1,6 +1,6 @@
 # NDIMAZ196_FTC2306_GroupA_NdiphiwokuhleMazeka_IWA_19
 # Author: Ndiphiwokuhle Mazeka
-# Technologies used: HTML, JavaSript, CSS
+# Technologies used: HTML, JavaSript, CSS, VisualStudioCode, and MS power-point
 # Project description:  The project is about reviewing an existing JavaScript code, while given the HTML and CSS files which it has to interface with.  
 #                       Currently, it throws several errors preventing thecode from even running. It is required that all critical issues be fixed,  
 #                       as well as a full audit of the existing code be made. The goal is to highlight areas where improvements can be made to performance, 
@@ -16,3 +16,4 @@
 # preference between day and night themes. This feature is accessed through the settings icon next to the search icon on the top right.
 
 
+[NDIMAZ196_FTC2306_GroupA_NdiphiwokuhleMazeka_IWA_Presentation.pptx](https://github.com/CodeSpaceCodes/NDIMAZ196_FTC2306_GroupA_NdiphiwokuhleMazeka_IWA_19/files/12563761/NDIMAZ196_FTC2306_GroupA_NdiphiwokuhleMazeka_IWA_Presentation.pptx)
