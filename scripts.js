@@ -62,6 +62,16 @@ const css = {
 // functions
 
 /**
+ * handler fires when the page is first loaded. It renders the system theme settings
+ */
+const defaultTheme = () =>{
+    const windowSettings = window.matchMedia("(prefers-color-scheme: dark)").matches ? 'night' : 'day';
+    props.settings.dataSettingsTheme.value = windowSettings;
+    document.documentElement.style.setProperty('--color-light', css[windowSettings].light);
+    document.documentElement.style.setProperty('--color-dark', css[windowSettings].dark);
+    };
+
+/**
  * Handler displays the books desired as contained in the handler array
  * argument. The handler loops through the argument displaying and assigning
  * applicable properties to each book as passes through it. Handler returns an
@@ -324,13 +334,6 @@ const saveSettings = (event) => {
 const closeSettingsOverlay = (event) => {
     props.settings.dataSettingsOverlay.close();
 };
-
-const defaultTheme = () =>{
-    const windowSettings = window.matchMedia("(prefers-color-scheme: dark)").matches ? 'night' : 'day';
-    props.settings.dataSettingsTheme.value = windowSettings;
-    document.documentElement.style.setProperty('--color-light', css[windowSettings].light);
-    document.documentElement.style.setProperty('--color-dark', css[windowSettings].dark);
-    };
 
 // logic
 
