@@ -325,13 +325,16 @@ const closeSettingsOverlay = (event) => {
     props.settings.dataSettingsOverlay.close();
 };
 
+const defaultTheme = () =>{
+    const windowSettings = window.matchMedia("(prefers-color-scheme: dark)").matches ? 'night' : 'day';
+    props.settings.dataSettingsTheme.value = windowSettings;
+    document.documentElement.style.setProperty('--color-light', css[windowSettings].light);
+    document.documentElement.style.setProperty('--color-dark', css[windowSettings].dark);
+    };
 
 // logic
 
-const windowSettings = window.matchMedia("(prefers-color-scheme: dark)").matches ? 'night' : 'day';
-props.settings.dataSettingsTheme.value = windowSettings;
-document.documentElement.style.setProperty('--color-light', css[windowSettings].light);
-document.documentElement.style.setProperty('--color-dark', css[windowSettings].dark);
+defaultTheme();
 
 bookPreview(props.library.books.slice(BOOK_SLICE_START_INDEX, props.library.BOOKS_PER_PAGE));
 
