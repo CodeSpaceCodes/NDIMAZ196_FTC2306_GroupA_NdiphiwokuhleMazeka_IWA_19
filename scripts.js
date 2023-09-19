@@ -1,79 +1,74 @@
+// import variables
 import { books, authors, genres, BOOKS_PER_PAGE } from './data.js'
 
-
+// variables object literal
 const props = {
-    // search data-attributes
-    dataHeaderSearch: document.querySelector('[data-header-search]'),
-    searchCancelButton: document.querySelector('[data-search-cancel]'),
-    dataSearchGenres: document.querySelector('[data-search-genres]'),
-    dataSearchAuthors: document.querySelector('[data-search-authors]'),
-    dataSearchOverlay: document.querySelector('[data-search-overlay]'),
-    dataSearchTitle: document.querySelector('[data-search-title]'),
-    dataSearchForm: document.querySelector('[data-search-form]'),
-    searchButton: document.querySelector('[form="search"]'),
+    search: {
+        dataHeaderSearch: document.querySelector('[data-header-search]'),
+        searchCancelButton: document.querySelector('[data-search-cancel]'),
+        dataSearchGenres: document.querySelector('[data-search-genres]'),
+        dataSearchAuthors: document.querySelector('[data-search-authors]'),
+        dataSearchOverlay: document.querySelector('[data-search-overlay]'),
+        dataSearchTitle: document.querySelector('[data-search-title]'),
+        dataSearchForm: document.querySelector('[data-search-form]'),
+        searchButton: document.querySelector('[form="search"]'),
+    },
 
-    // settings data-attributes
-    dataHeaderSettings: document.querySelector('[data-header-settings]'),
-    settingsCancelButton: document.querySelector('[data-settings-cancel]'),
-    dataSettingsTheme: document.querySelector('[data-settings-theme]'),
-    dataSettingsOverlay: document.querySelector('[data-settings-overlay]'),
+    settings: {
+        dataHeaderSettings: document.querySelector('[data-header-settings]'),
+        settingsCancelButton: document.querySelector('[data-settings-cancel]'),
+        dataSettingsTheme: document.querySelector('[data-settings-theme]'),
+        dataSettingsOverlay: document.querySelector('[data-settings-overlay]'),
+        settingSaveButton: document.querySelector('[form="settings"]')
+    },
 
+    mainListing: {
+        dataListItems: document.querySelector('[data-list-items]'),
+        dataListButton: document.querySelector('[data-list-button]'),
+        dataListMessage: document.querySelector('[data-list-message]'),
+        dataListActive: document.querySelector('[data-list-active]'),
+        dataListBlur: document.querySelector('[data-list-blur]'),
+        dataListImage: document.querySelector('[data-list-image]'),
+        dataListTitle: document.querySelector('[data-list-title]'),
+        dataListSubtitle: document.querySelector('[data-list-subtitle]'),
+        dataListDescription: document.querySelector('[data-list-description]'),
+        activeCloseOverlay: document.querySelector('[data-list-close]')
+    },
 
-    // main list data-attributes
-    dataListItems: document.querySelector('[data-list-items]'),
-    dataListButton: document.querySelector('[data-list-button]'),
-    dataListMessage: document.querySelector('[data-list-message]'),
-    dataListActive: document.querySelector('[data-list-active]'),
-    dataListBlur: document.querySelector('[data-list-blur]'),
-    dataListImage: document.querySelector('[data-list-image]'),
-    dataListTitle: document.querySelector('[data-list-title]'),
-    dataListSubtitle: document.querySelector('[data-list-subtitle]'),
-    dataListDescription: document.querySelector('[data-list-description]'),
-    activeCloseOverlay: document.querySelector('[data-list-close]')
+    library: {
+        books,
+        authors,
+        genres,
+        BOOKS_PER_PAGE,
+    }
 }
 
-// search data-attributes
-const dataHeaderSearch = document.querySelector('[data-header-search]');
-const searchCancelButton = document.querySelector('[data-search-cancel]');
-const dataSearchGenres = document.querySelector('[data-search-genres]');
-const dataSearchAuthors = document.querySelector('[data-search-authors]');
-const dataSearchOverlay = document.querySelector('[data-search-overlay]');
-const dataSearchTitle = document.querySelector('[data-search-title]');
-const dataSearchForm = document.querySelector('[data-search-form]');
-const searchButton = document.querySelector('[form="search"]');
+// global scope variableS
+let PAGE = 1;
+let REMAINING_BOOKS = props.library.books.length - props.library.BOOKS_PER_PAGE * PAGE;
+let BOOK_SLICE_START_INDEX = 0;
 
-// settings data-attributes
-const dataHeaderSettings = document.querySelector('[data-header-settings]');
-const settingsCancelButton = document.querySelector('[data-settings-cancel]');
-const dataSettingsTheme = document.querySelector('[data-settings-theme]');
-const dataSettingsOverlay = document.querySelector('[data-settings-overlay]');
-const settingSaveButton = document.querySelector('[form="settings"]');
+const css = {
+    day: {
+        dark: '10, 10, 20',
+        light: '255, 255, 255',
+    },
+    night: {
+        dark: '255, 255, 255',
+        light: '10, 10, 20',
+    },
+};
 
-// main list data-attributes
-const dataListItems = document.querySelector('[data-list-items]');
-const dataListButton = document.querySelector('[data-list-button]');
-const dataListMessage = document.querySelector('[data-list-message]');
-const dataListActive = document.querySelector('[data-list-active]');
-const dataListBlur = document.querySelector('[data-list-blur]');
-const dataListImage = document.querySelector('[data-list-image]');
-const dataListTitle = document.querySelector('[data-list-title]');
-const dataListSubtitle = document.querySelector('[data-list-subtitle]');
-const dataListDescription = document.querySelector('[data-list-description]');
-const activeCloseOverlay = document.querySelector('[data-list-close]')
-
-
-let matches = books;
-let page = 1;
-let remainingBooks = books.length - BOOKS_PER_PAGE * page;
-let BookSliceStarttIndex = 0
-
+// functions
 
 /**
- * A function that loops over the books library array together with the authors
- * object. It retrieves the each book, it author, and title for display.
+ * Handler displays the books desired as contained in the handler array
+ * argument. The handler loops through the argument displaying and assigning
+ * applicable properties to each book as passes through it. Handler returns an
+ * object that is used for searching purposes.
  * 
  * @param {Array} books 
- * @returns {void}
+ * @returns {object} 
  */
 const bookPreview = (takeBook) => {
     const pageFregment = document.createDocumentFragment()
@@ -99,46 +94,50 @@ const bookPreview = (takeBook) => {
             </div>`;
 
         pageFregment.appendChild(bookList);
-        dataListItems.appendChild(pageFregment)
+        props.mainListing.dataListItems.appendChild(pageFregment)
     }
-    return dataListItems;
-}
+    return props.mainListing.dataListItems;
+};
 
-
-bookPreview(books.slice(BookSliceStarttIndex, BOOKS_PER_PAGE))  //<--- displays books
-
-
-dataListButton.innerHTML = `Show more ${remainingBooks}`;
-// show next page and the number of the remaining books
 /**
- * The show more button event-listener with a handler that takes the event as the argument.
- * The hanlder increments the counter of the being on display hence deducting
- * the books hidden in the library.
+ * The handler calculates and updates the number of hidden books and displays it
+ * in the optional 'show more' button each time it is clicked. It takes the
+ * event as its argument and returns void.
  * 
  * @param {Event} event
  * @return {void} 
  */
-dataListButton.addEventListener('click', (event) => {
-    BookSliceStarttIndex += BOOKS_PER_PAGE;
-    page++;
-    bookPreview(books.slice(BookSliceStarttIndex, BOOKS_PER_PAGE * page))
-    remainingBooks = books.length - BOOKS_PER_PAGE * page;
-    console.log(remainingBooks)
-    dataListButton.innerHTML = remainingBooks <= 0 ? `Show more (0)` : `Show more (${remainingBooks})`
-    if (remainingBooks <= 0) dataListButton.disabled = true;
-})
-
+const findRemainingBooks = (event) => {
+    const { library: {
+        books: { },
+        BOOKS_PER_PAGE: { }
+    }
+    } = props;
+    BOOK_SLICE_START_INDEX += BOOKS_PER_PAGE;
+    PAGE++;
+    bookPreview(books.slice(BOOK_SLICE_START_INDEX, BOOKS_PER_PAGE * PAGE))
+    REMAINING_BOOKS = books.length - BOOKS_PER_PAGE * PAGE;
+    props.mainListing.dataListButton.innerHTML = REMAINING_BOOKS <= 0 ? `Show more (0)` : `Show more (${REMAINING_BOOKS})`;
+    if (REMAINING_BOOKS <= 0) dataListButton.disabled = true;
+};
 
 /**
- * Event-listener associated with each book in the library. When the book is
- * clicked, it pops-up with overlay for clear and more datailed preview.
+ * Hendler fires when a book is clicked, it pops-up with overlay for a clear and
+ * more datailed preview. It take the event as its argument, and uses it to find
+ * the id of the specific book clicked for futher processing. Handler returns
+ * nothing.
  * 
  * @param {Event} event
- * 
  * @returns {void}
  */
-dataListItems.addEventListener('click', function (event) {
-    dataListActive.show();
+const reviewBook = (event) => {
+    const { library: {
+        authors: { },
+        books: { }
+    }
+    } = props;
+
+    props.mainListing.dataListActive.show();
 
     const bookId = event.target.closest('.preview').id;
     let activeBook = [];
@@ -148,58 +147,63 @@ dataListItems.addEventListener('click', function (event) {
             break
         };
     }
-    dataListImage.src = activeBook.image
-    dataListBlur.src = activeBook.image;
-    dataListTitle.innerHTML = activeBook.title;
-    dataListSubtitle.innerHTML = `${authors[activeBook.author]} (${(activeBook.published).slice(0, 4)})`
-    dataListDescription.innerHTML = activeBook.description;
+    props.mainListing.dataListImage.src = activeBook.image
+    props.mainListing.dataListBlur.src = activeBook.image;
+    props.mainListing.dataListTitle.innerHTML = activeBook.title;
+    props.mainListing.dataListSubtitle.innerHTML = `${authors[activeBook.author]} (${(activeBook.published).slice(0, 4)})`
+    props.mainListing.dataListDescription.innerHTML = activeBook.description;
+}
 
 
-    /**
-     * book pop-up modal close button event-listener with a handler that is
-     * reponsible for closing the pop-up modal
-     * 
-     * @param {Event} event 
-     * @returns {void}
-     */
-    activeCloseOverlay.addEventListener('click', function (event) {
-        dataListActive.close();
-    })
-})
+/**
+ * Handler fires when the close button of the detailed review pop-up modal is clicked.
+ * reponsible for closing the pop-up modal. Takes the default event argument and
+ * returns nothing
+ *
+ * @param {Event} event 
+ * @returns {void}
+ */
 
+const closeReviewBook = (event) => {
+    props.mainListing.dataListActive.close();
+}
 
-
-
-/** This is mainly for the search button
- * Search button event-listener with nested event-listeners. The handler shows
- * the overlay with the content. 
+/** 
+ * Handler fires when the header search icon button is clicked to activate the
+ * search overlay
  * 
  * @param {Event} event
  * @returns {void}
  */
-dataHeaderSearch.addEventListener('click', function (event) {
-    dataSearchOverlay.show()
-});
+const showSearchOverlay = (event) => {
+    props.search.dataSearchOverlay.show();
+};
+
 
 /**
- * genre field event-listener used to show or populate the genre field
+ * anonimous function used to populate the genre field
  */
 (function () {
-    const genreFregmant = document.createDocumentFragment()
-    //dataSearchOverlay.show();
+    const { library:
+        { genres }
+    } = props;
+    const genreFregmant = document.createDocumentFragment();
     const genreValuesArray = ['All Genres'].concat(Object.values(genres));
-    // console.log(genreValuesArray);
+
     genreValuesArray.forEach((currentGenreValue) => {
         const selectOption = document.createElement('option');
         selectOption.value = currentGenreValue;
         selectOption.innerText = currentGenreValue;
         genreFregmant.appendChild(selectOption);
     })
-    dataSearchGenres.appendChild(genreFregmant);
+    props.search.dataSearchGenres.appendChild(genreFregmant);
 })();
 
-/**Much more like the above except that this code-block is for authors */
+/**Much more like the above anonumous function except that this code-block is for authors */
 (function () {
+    const { library:
+        { authors },
+    } = props;
     const authorFregment = document.createDocumentFragment();
     const authorValueArray = ['All Authors'].concat(Object.values(authors));
     authorValueArray.forEach((currentAuthorValue) => {
@@ -208,38 +212,51 @@ dataHeaderSearch.addEventListener('click', function (event) {
         authorSelectOption.innerText = currentAuthorValue;
         authorFregment.appendChild(authorSelectOption)
     });
-    dataSearchAuthors.appendChild(authorFregment)
+    props.search.dataSearchAuthors.appendChild(authorFregment)
 })();
-/* This is an event listener for cancelling the search and closing the search pop-up modal*/
-searchCancelButton.addEventListener('click', function () {
-    dataSearchOverlay.close()
-});
-/**This is where the search functionality starts taking place, begining with
- * clicking the 'search' button nested in the search overlay. This search button
- * has an event listener. The handler takes the argument as the event.
+
+/**
+ * Handler fires to deactivate the search overlay
+ * @param {} event 
+ */
+const closeSearchOverlay = (event) => {
+    props.search.dataSearchOverlay.close();
+};
+
+/**
+ * Handler fires when the search submit form button is clicked. The handler uses
+ * the filter buitin function to loop through the provided books array. It
+ * retrieves the values of the properties being searched for through the data
+ * attributes. As it loops through the books in the found in the array, it
+ * compares each book with the property values being searched for. Once done, it
+ * then returns the books matching the searched property values while hiding the
+ * non-matching ones. If there is no match found, the handler displays the
+ * relevant message
  * 
  * @param {Event} event
- * 
- * */
+ * @returns {void}
+ */
 function searchSubmit(event) {
-    event.preventDefault();     // prevent mistake submission
-    const searchTitle = dataSearchTitle.value.toLowerCase();  //value of the tittle searched
-    const searchGenre = dataSearchGenres.value; // value of the selected genre
-    const searchAuthor = dataSearchAuthors.value;   // value of the selected author
-    console.log("Search")
+    event.preventDefault();
+    const searchTitle = props.search.dataSearchTitle.value.toLowerCase();
+    const searchGenre = props.search.dataSearchGenres.value;
+    const searchAuthor = props.search.dataSearchAuthors.value;
+    const { library:
+        { books,
+            genres
+        }
+    } = props;
 
 
     const searchedBooks = books.filter((book) => {
         let genreArray = [];
         for (let i = 0; i < book.genres.length; i++) {
-            let genreItem1 = '';
+            let genreExtract = '';
             for (const genreItem of book.genres) {
-                genreItem1 = genres[genreItem];
+                genreExtract = genres[genreItem];
             }
-            genreArray.push(genreItem1);
+            genreArray.push(genreExtract);
         }
-        //const bookAuthor = authors[book.author];
-
 
         const matchTitles = book.title.toLowerCase().includes(searchTitle);
         const matchGenre = searchGenre === 'All Genres' || genreArray.includes(searchGenre);
@@ -247,69 +264,93 @@ function searchSubmit(event) {
 
         return matchTitles && matchGenre && matchAuthor;
     })
-    //console.log(searchedBooks);
+    
     const allBooks = bookPreview(books);
     const bookButtons = allBooks.querySelectorAll('button');
-    console.log(bookButtons);
+    
     bookButtons.forEach((currentButton) => {
         currentButton.classList.replace('preview', 'preview_hidden');
     })
-    dataListButton.style.display = 'none';
+    props.mainListing.dataListButton.style.display = 'none';
 
-    if (searchedBooks) {
+    if (searchedBooks.length>0) {
         bookPreview(searchedBooks);
-        dataListMessage.style.display = 'none';
+        props.mainListing.dataListMessage.style.display = 'none';
+    } else {
+        props.mainListing.dataListMessage.style.display = 'block';
     }
 
-    dataSearchOverlay.close();
-    dataSearchForm.reset();
-}
-searchButton.addEventListener('click', searchSubmit)
+    props.search.dataSearchOverlay.close();
+    props.search.dataSearchForm.reset();
+};
 
-const css = {
-    day: {
-        dark: '10, 10, 20',
-        light: '255, 255, 255',
-    },
-    night: {
-        dark: '255, 255, 255',
-        light: '10, 10, 20',
-    },
+/**
+ * Handler fires each time the settings button icon is clicked to activate the
+ * settings overlay
+ * 
+ * @param {void}
+ * @returns {void}
+*/
+const showSettingsOverlay = (event) => {
+    props.settings.dataSettingsOverlay.show();
+}
+
+/**
+ * Handler fires when the theme settings option is selected. It changes or
+ * maintaines the theme settings
+ * 
+ * @param {*} event 
+*/
+const saveSettings = (event) => {
+    event.preventDefault();
+    const themeVariable = props.settings.dataSettingsTheme.value;
+
+    if (themeVariable === 'day') {
+        document.documentElement.style.setProperty('--color-light', css[themeVariable].light);
+        document.documentElement.style.setProperty('--color-dark', css[themeVariable].dark);
+    }
+    if (themeVariable === 'night') {
+        document.documentElement.style.setProperty('--color-light', css[themeVariable].light);
+        document.documentElement.style.setProperty('--color-dark', css[themeVariable].dark);
+    }
+    props.settings.dataSettingsOverlay.close();
+};
+
+/**
+ * Handler fires to deactivate the settings overlay
+ * @param {*} event
+ * @returns {void}
+*/
+const closeSettingsOverlay = (event) => {
+    props.settings.dataSettingsOverlay.close();
 };
 
 
-
-/**This is mainly for the settings button. The button has an event-listener with
- * an event as the argument of the handler. The handler begins by showing the
- * search overlay.
- * 
- * @param {void}
- */
+// logic
 
 const windowSettings = window.matchMedia("(prefers-color-scheme: dark)").matches ? 'night' : 'day';
-dataSettingsTheme.value = windowSettings;
+props.settings.dataSettingsTheme.value = windowSettings;
 document.documentElement.style.setProperty('--color-light', css[windowSettings].light);
 document.documentElement.style.setProperty('--color-dark', css[windowSettings].dark);
 
-dataHeaderSettings.addEventListener('click', function (event) {
-    dataSettingsOverlay.show();
-})
-    settingSaveButton.addEventListener('click', (event)=>{
-    event.preventDefault();
-    const themeVariable = dataSettingsTheme.value;
+bookPreview(props.library.books.slice(BOOK_SLICE_START_INDEX, props.library.BOOKS_PER_PAGE));
 
-    if (themeVariable === 'day') {
-        document.documentElement.style.setProperty('--color-light', css[themeVariable].light)
-        document.documentElement.style.setProperty('--color-dark', css[themeVariable].dark)
-    }
-    if (themeVariable === 'night') {
-        document.documentElement.style.setProperty('--color-light', css[themeVariable].light)
-        document.documentElement.style.setProperty('--color-dark', css[themeVariable].dark)
+props.mainListing.dataListButton.innerHTML = `Show more ${REMAINING_BOOKS}`;
 
-    }
-    dataSettingsOverlay.close()
-});
+props.mainListing.dataListButton.addEventListener('click', findRemainingBooks);
 
-settingsCancelButton.addEventListener('click', function () {
-    dataSettingsOverlay.close();
-});
+props.mainListing.dataListItems.addEventListener('click', reviewBook);
+
+props.mainListing.activeCloseOverlay.addEventListener('click', closeReviewBook);
+
+props.search.dataHeaderSearch.addEventListener('click', showSearchOverlay);
+
+props.search.searchCancelButton.addEventListener('click', closeSearchOverlay);
+
+props.search.searchButton.addEventListener('click', searchSubmit);
+
+props.settings.dataHeaderSettings.addEventListener('click', showSettingsOverlay);
+
+props.settings.settingSaveButton.addEventListener('click', saveSettings);
+
+props.settings.settingsCancelButton.addEventListener('click', closeSettingsOverlay);
